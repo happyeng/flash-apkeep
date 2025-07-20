@@ -1,0 +1,1 @@
+compiled with maven with settings in evaluation/overall.java and run java -Xmx28g -jar flash.jar -e OverallPerformance specified in evaluator
