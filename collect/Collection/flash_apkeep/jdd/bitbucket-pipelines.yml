@@ -1,0 +1,11 @@
+# image: java
+
+pipelines:
+  default:
+    - step:
+        script:
+          - apt update
+          - apt install -y graphviz
+          - ./gradlew clean
+          - ./gradlew test --info
+          - ./gradlew jar

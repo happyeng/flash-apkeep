@@ -1,0 +1,66 @@
+buildscript {
+	repositories {
+		jcenter()
+	}
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
+group = 'org.bitbucket.vahidi'
+version = '111'
+
+allprojects {
+	repositories {
+		jcenter()
+	}
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	apply plugin: 'java'
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    test.java.srcDirs = ['test']
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+// maven  publishing support
+// based on https://github.com/bintray/bintray-examples/blob/master/gradle-bintray-plugin-examples/configurations-example/build.gradle
+bintray {
+// add to gradle.properties:
+// bintrayUser=xxx
+// bintrayApiKey=yyy
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+	configurations = ['archives']
+	pkg {
+		repo = 'maven'
+		name = 'org.bitbucket.vahidi:jdd'
+		licenses = ['ZLIB']
+		vcsUrl = 'https://bitbucket.org/vahidi/jdd'
+		version {
+			name = project.version
+			desc = 'JDD: Java library for Binary & Zero-suppressed Decision Diagram'
+			vcsTag = project.version
+		}
+	}
+}
